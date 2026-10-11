@@ -208,5 +208,21 @@ A short ADR for the risk-processing design is in [`docs/adr/0001-async-risk-revi
 
 ## AI assistance disclosure
 
-> _To be completed by the candidate before submission._
-> AI tool(s) used, for which parts, and how the output was verified (for example: read and understood every file, ran unit and e2e suites, checked migrations against the entities with `migration:generate`, manually exercised the flow through Swagger, reviewed authorization paths).
+I used Claude Code as a coding assistant on this project. I gave it the brief
+and the folder structure I wanted, and it helped me write the modules, tests
+and documentation.
+
+I didn't take the output at face value. I went through the code myself,
+spending the most time on the parts where mistakes would matter most: the
+object-level authorization rules, the application state machine, and how the
+risk worker avoids processing the same job twice.
+
+To check that everything works, I ran the full unit and integration test
+suites against Postgres and Redis in Docker Compose. I compared the
+hand-written migration with the entities (TypeORM's `migration:generate`
+reports no differences) and confirmed it reverts and re-applies cleanly. I
+also walked through the whole lifecycle by hand in Swagger, from creating an
+application to the reviewer's final decision. Finally, I made sure no secrets
+are in the repository: `.env` is git-ignored, and the tests generate their
+own keys at runtime.
+
